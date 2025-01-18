@@ -1,5 +1,6 @@
 import os
 import pickle
+import random
 
 import numpy as np
 from PIL import Image
@@ -47,3 +48,25 @@ def load_data_set(data_set_folder):
         with open(class_file_path, 'rb') as class_file:
             data_set[class_name] = pickle.load(class_file)
     return data_set
+
+
+def get_subset(data_set, size):
+    """Получает подможножество изображений заданного размера."""
+    subset = {}
+    for class_name, images in data_set.items():
+        subset[class_name] = random.sample(images, size // NUMBER_OF_CLASSES)
+    return subset
+
+
+def get_subsets():
+    """Получает обучающае, валидационное и контрольное подмножества."""
+    random.seed(7)
+    large_data_set = load_data_set(LARGE_DATA_SET_FOLDER)
+    small_data_set = load_data_set(SMALL_DATA_SET_FOLDER)
+    training_subset = get_subset(large_data_set, 200000)
+    validation_subset = get_subset(large_data_set, 10000)
+    control_subset = small_data_set
+    for class_name, images in training_subset.items():
+        taken_images = {tuple(image.flatten()) for image in validation_subset[class_name] + control_subset[class_name]}
+        training_subset[class_name] = [image for image in images if tuple(image.flatten()) not in taken_images]
+    return training_subset, validation_subset, control_subset

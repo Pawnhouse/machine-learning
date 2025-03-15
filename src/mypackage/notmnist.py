@@ -13,7 +13,7 @@ CLASSES = 'ABCDEFGHIJ'
 NUMBER_OF_CLASSES = 10
 
 
-def get_images(folder_path):
+def get_images(folder_path, is_verbose=True):
     """Загружает изображения из набора данных и возвращает список массивов NumPy."""
     images = []    
     for file in os.listdir(folder_path):
@@ -23,7 +23,9 @@ def get_images(folder_path):
             images.append(img)
         except (IOError, SyntaxError):
             print('Поврежденное изображение ' + image_path)
-    print('Готово для ' + folder_path)
+            
+    if is_verbose:
+        print('Готово для ' + folder_path)
     return images
 
 

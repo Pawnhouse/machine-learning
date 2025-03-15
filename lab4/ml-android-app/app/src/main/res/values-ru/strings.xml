@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Определение цифр</string>
+    <string name="choose_photo">Выберите фотографию</string>
+    <string name="gallery">Галерея</string>
+    <string name="camera">Камера</string>
+    <string name="digit_on_the_photo">Цифра на фотографии: %d</string>
+    <string name="photo_placeholder">Фотография</string>
+</resources>

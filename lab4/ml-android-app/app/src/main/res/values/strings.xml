@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Digit Classification</string>
+    <string name="app_name">House Number Classification</string>
     <string name="choose_photo">Choose photo</string>
     <string name="gallery">Gallery</string>
     <string name="camera">Camera</string>
-    <string name="digit_on_the_photo">Digit on the photo: %d</string>
+    <string name="house_number">House number: %s</string>
     <string name="photo_placeholder">Photo</string>
 </resources>

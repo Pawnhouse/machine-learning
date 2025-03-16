@@ -16,6 +16,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
+import com.example.ml_android_app.image_processing_model.ImageDetectionModel
+import com.example.ml_android_app.image_processing_model.ImagePredictionModel
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -23,6 +25,7 @@ import java.io.IOException
 
 class MainActivity : ComponentActivity() {
     private lateinit var imagePredictionModel: ImagePredictionModel
+    private lateinit var imageDetectionModel: ImageDetectionModel
 
     private lateinit var photoText: TextView
     private lateinit var photoImageView: ImageView
@@ -36,6 +39,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         imagePredictionModel = ImagePredictionModel(assets)
+        imageDetectionModel = ImageDetectionModel(assets)
 
         setContentView(R.layout.activity_main)
 
@@ -89,8 +93,8 @@ class MainActivity : ComponentActivity() {
                     val exif = ExifInterface(exifInputStream)
                     val rotatedBitmap = rotateBitmap(imageBitmap, exif)
                     photoImageView.setImageBitmap(rotatedBitmap)
-                    val predictedDigit = imagePredictionModel.getPredictedDigit(rotatedBitmap)
-                    photoText.text = getString(R.string.digit_on_the_photo, predictedDigit)
+                    val predictedNumber = predictNumber(rotatedBitmap)
+                    photoText.text = getString(R.string.house_number, predictedNumber)
                 }
             }
         } catch (e: FileNotFoundException) {
@@ -98,6 +102,18 @@ class MainActivity : ComponentActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    private fun predictNumber(bitmap: Bitmap): String {
+        val digitBitmaps = imageDetectionModel.getDigitBitmaps(bitmap)
+        val digits = mutableListOf<Int>()
+
+        for (digitBitmap in digitBitmaps) {
+            val predictedDigit = imagePredictionModel.predictDigit(digitBitmap)
+            digits.add(predictedDigit)
+        }
+
+        return digits.joinToString("") { it.toString() }
     }
 
     private fun rotateBitmap(bitmap: Bitmap, exif: ExifInterface): Bitmap {
